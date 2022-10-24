@@ -1,14 +1,30 @@
 package fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.mediplz.MainActivity;
 import com.example.mediplz.R;
+import com.example.mediplz.databinding.FragmentOtcDrugAddBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +32,11 @@ import com.example.mediplz.R;
  * create an instance of this fragment.
  */
 public class OtcDrugAddFragment extends Fragment {
+    private FragmentOtcDrugAddBinding binding;
+    private View view;
+
+    private String[] otcReasonList;
+    private ArrayAdapter<String> adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,12 +76,71 @@ public class OtcDrugAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        
+        initialize();
+    }
+
+    @SuppressLint("ResourceType")
+    private  void initialize(){     //초기화
+        otcReasonList = getResources().getStringArray(R.array.otc_reason_array);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, otcReasonList);
+    }
+
+    private void setAdapter(){      //adapter set
+        binding.otcDrugAddReason.setAdapter(adapter);
+    }
+
+    private void spinnerSelect(){
+        binding.otcDrugAddReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_otc_drug_add, container, false);
+        View view = inflater.inflate(R.layout.fragment_otc_drug_add, container, false);
+
+        EditText otcAddName = view.findViewById(R.id.otc_drug_add_name);
+        Spinner otcAddReason = view.findViewById(R.id.otc_drug_add_reason);
+        DatePicker otcAddDate = view.findViewById(R.id.otc_drug_add_date);
+        Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
+        Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference otcName = database.getReference("일반의약품_의약품명");
+        DatabaseReference otcReason = database.getReference("복용_이유");
+        DatabaseReference otcDate = database.getReference("복용_날짜");
+
+        //otcAddName 클릭 시 빈칸으로 바뀜
+        otcAddName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                otcAddName.setText(null);
+            }
+        });
+
+        otcAddSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //파이어베이스에 의약품명 작성
+                otcName.setValue(otcAddName.getText().toString());
+
+                //Toast 메시지로 저장이 완료되었다는 것을 알려줌
+                Toast.makeText(getActivity(), "저장 완료", Toast.LENGTH_LONG);
+                otcAddName.setText(null);
+            }
+        });
+
+        return view;
     }
 }

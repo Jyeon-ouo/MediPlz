@@ -15,6 +15,12 @@ import fragment.PrescriptionAddFragment;
 import fragment.PrescriptionManagementFragment;
 import fragment.WasteDrugInfoFragment;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment WasteDrugInfoFragment;
     private Fragment OtcDrugAddFragment;
     private Fragment PrescriptionAddFragment;
+
     private Menu menu;
 
     @Override

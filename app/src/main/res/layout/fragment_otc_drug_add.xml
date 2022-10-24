@@ -38,6 +38,7 @@
                     android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
                     android:hint="의약품명"
+                    android:privateImeOptions="defaultImputmode=korean"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +56,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
-                    android:id="@+id/otc_drug_add_list"
+                    android:id="@+id/otc_drug_add_reason"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
@@ -93,7 +94,7 @@
                 android:layout_marginTop="20dp">
 
                 <Button
-                    android:id="@+id/otc_add_save"
+                    android:id="@+id/otc_drug_add_save"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginRight="50dp"
@@ -101,7 +102,7 @@
                     android:text="저장" />
 
                 <Button
-                    android:id="@+id/otc_add_cancel"
+                    android:id="@+id/otc_drug_add_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
