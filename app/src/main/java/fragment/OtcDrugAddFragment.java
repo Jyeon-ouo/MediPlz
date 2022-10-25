@@ -136,7 +136,7 @@ public class OtcDrugAddFragment extends Fragment {
                 otcName.setValue(otcAddName.getText().toString());
 
                 //Toast 메시지로 저장이 완료되었다는 것을 알려줌
-                Toast.makeText(getActivity(), "저장 완료", Toast.LENGTH_LONG);
+                Toast.makeText(getParentFragment().getActivity(), "저장 완료", Toast.LENGTH_LONG);
                 otcAddName.setText(null);
             }
         });
