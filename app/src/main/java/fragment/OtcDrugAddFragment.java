@@ -15,16 +15,21 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mediplz.MainActivity;
 import com.example.mediplz.R;
+import com.example.mediplz.databinding.ActivityMainBinding;
 import com.example.mediplz.databinding.FragmentOtcDrugAddBinding;
+import com.example.mediplz.databinding.FragmentOtcDrugManagementBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,9 +39,20 @@ import com.google.firebase.database.ValueEventListener;
 public class OtcDrugAddFragment extends Fragment {
     private FragmentOtcDrugAddBinding binding;
     private View view;
-
     private String[] otcReasonList;
     private ArrayAdapter<String> adapter;
+
+    EditText otcAddName = view.findViewById(R.id.otc_drug_add_name);
+    Spinner otcAddReason = view.findViewById(R.id.otc_drug_add_reason);
+    TextView otcAddReasonView = view.findViewById(R.id.otc_drug_add_reason_textview);
+    DatePicker otcAddDate = view.findViewById(R.id.otc_drug_add_date);
+    Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
+    Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference otcName = database.getReference("일반의약품_의약품명");
+    DatabaseReference otcReason = database.getReference("일반의약품_복용_이유");
+    DatabaseReference otcDate = database.getReference("일반의약품_복용_날짜");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,8 +92,9 @@ public class OtcDrugAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        
         initialize();
+        setAdapter();
+        spinnerSelect();
     }
 
     @SuppressLint("ResourceType")
@@ -87,14 +104,14 @@ public class OtcDrugAddFragment extends Fragment {
     }
 
     private void setAdapter(){      //adapter set
-        binding.otcDrugAddReason.setAdapter(adapter);
+        otcAddReason.setAdapter(adapter);
     }
 
     private void spinnerSelect(){
-        binding.otcDrugAddReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        otcAddReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                otcAddReasonView.setText(otcReasonList[i]);
             }
 
             @Override
@@ -110,17 +127,6 @@ public class OtcDrugAddFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_otc_drug_add, container, false);
 
-        EditText otcAddName = view.findViewById(R.id.otc_drug_add_name);
-        Spinner otcAddReason = view.findViewById(R.id.otc_drug_add_reason);
-        DatePicker otcAddDate = view.findViewById(R.id.otc_drug_add_date);
-        Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
-        Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference otcName = database.getReference("일반의약품_의약품명");
-        DatabaseReference otcReason = database.getReference("복용_이유");
-        DatabaseReference otcDate = database.getReference("복용_날짜");
-
         //otcAddName 클릭 시 빈칸으로 바뀜
         otcAddName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +135,7 @@ public class OtcDrugAddFragment extends Fragment {
             }
         });
 
+        //저장버튼
         otcAddSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,11 +143,24 @@ public class OtcDrugAddFragment extends Fragment {
                 otcName.setValue(otcAddName.getText().toString());
 
                 //Toast 메시지로 저장이 완료되었다는 것을 알려줌
-                Toast.makeText(getParentFragment().getActivity(), "저장 완료", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), "저장되었습니다.", Toast.LENGTH_LONG).show();
                 otcAddName.setText(null);
             }
         });
 
-        return view;
+        //취소버튼
+        otcAddCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        return viewBinding(inflater, container, savedInstanceState);
+    }
+
+    public View viewBinding(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        binding = FragmentOtcDrugAddBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 }

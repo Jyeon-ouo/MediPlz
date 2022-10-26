@@ -90,7 +90,7 @@ public class OtcDrugManagementFragment extends Fragment {
 
             }
         });
-        return view;
+        return viewBinding(inflater, container, savedInstanceState);
     }
 
     @Override
