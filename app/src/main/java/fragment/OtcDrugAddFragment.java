@@ -50,9 +50,7 @@ public class OtcDrugAddFragment extends Fragment {
     Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference otcName = database.getReference("일반의약품_의약품명");
-    DatabaseReference otcReason = database.getReference("일반의약품_복용_이유");
-    DatabaseReference otcDate = database.getReference("일반의약품_복용_날짜");
+    DatabaseReference databaseReference = database.getReference();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,26 +95,37 @@ public class OtcDrugAddFragment extends Fragment {
         spinnerSelect();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        addChildEvent();
+    }
+
     @SuppressLint("ResourceType")
     private  void initialize(){     //초기화
-        otcReasonList = getResources().getStringArray(R.array.otc_reason_array);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, otcReasonList);
+
     }
 
     private void setAdapter(){      //adapter set
-        otcAddReason.setAdapter(adapter);
+
     }
 
     private void spinnerSelect(){
-        otcAddReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-                otcAddReasonView.setText(otcReasonList[i]);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("일반의약품").addChildEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    String otcReasons = snapshot.child("일반의약품_복용이유").getValue(String.class);
+
+                    otcReasonList = getResources().getStringArray(R.array.otc_reason_array);
+                    adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, otcReasonList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    otcReasons.setAdapter(adapter);
+                }
             }
         });
     }
