@@ -140,7 +140,7 @@ public class OtcDrugAddFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //파이어베이스에 의약품명 작성
-                otcName.setValue(otcAddName.getText().toString());
+                otcName.child("일반의약품_의약품명").setValue(otcAddName.getText().toString());
 
                 //Toast 메시지로 저장이 완료되었다는 것을 알려줌
                 Toast.makeText(getActivity(), "저장되었습니다.", Toast.LENGTH_LONG).show();
@@ -156,7 +156,7 @@ public class OtcDrugAddFragment extends Fragment {
             }
         });
 
-        return viewBinding(inflater, container, savedInstanceState);
+        return view;
     }
 
     public View viewBinding(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
